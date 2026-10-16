@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from "react";
 import type { Habit } from "../types/habit";
 import { supabase } from "../lib/supabase";

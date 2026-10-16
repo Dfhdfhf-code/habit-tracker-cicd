@@ -1,4 +1,4 @@
-import { useAuth } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/useAuth";
 import LoginForm from "./components/LoginForm";
 import HabitTracker from "./components/HabitTracker";
 

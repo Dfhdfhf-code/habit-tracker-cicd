@@ -1,5 +1,5 @@
 import { useState, useCallback, type FormEvent } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/useAuth";
 
 type Mode = "signin" | "signup";
 
