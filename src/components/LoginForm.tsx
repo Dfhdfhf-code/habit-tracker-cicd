@@ -1,5 +1,6 @@
 import { useState, useCallback, type FormEvent } from "react";
 import { useAuth } from "../contexts/useAuth";
+import { supabase } from "../lib/supabase";
 
 type Mode = "signin" | "signup";
 
@@ -33,6 +34,24 @@ export function LoginForm() {
     [mode, email, password, signIn, signUp]
   );
 
+  // OAuth через Yandex (custom provider)
+  const handleYandexLogin = useCallback(async () => {
+    setError(null);
+    setLoading(true);
+
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: "custom:yandex" as never,
+      options: {
+        redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
+      },
+    });
+
+    if (oauthError) {
+      setError(oauthError.message);
+      setLoading(false);
+    }
+  }, []);
+
   return (
     <div className="app-container">
       <h1 className="app-title">Трекер привычек</h1>
@@ -46,6 +65,33 @@ export function LoginForm() {
         <h2 className="card-title">
           {mode === "signin" ? "Вход" : "Регистрация"}
         </h2>
+
+        <button
+          type="button"
+          onClick={handleYandexLogin}
+          disabled={loading}
+          className="glass-button"
+          style={{
+            width: "100%",
+            marginBottom: 16,
+            backgroundColor: "#fc3f1d",
+            color: "#fff",
+          }}
+        >
+          {loading ? "Загрузка..." : "Войти через Яндекс"}
+        </button>
+
+        <div
+          style={{
+            textAlign: "center",
+            color: "rgba(255,255,255,0.6)",
+            marginBottom: 16,
+            fontSize: 13,
+          }}
+        >
+          или
+        </div>
+
         <form onSubmit={handleSubmit} className="add-habit-form">
           <input
             type="email"
