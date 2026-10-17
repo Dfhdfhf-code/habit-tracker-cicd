@@ -105,6 +105,10 @@ export function useHabits(): UseHabitsReturn {
           type: "auth",
           message: "Вы не авторизованы. Войдите в аккаунт.",
         });
+        logger.error("Не удалось получить пользователя", {
+          code: userError?.code,
+          message: userError?.message,
+        });
         return;
       }
 
@@ -114,6 +118,11 @@ export function useHabits(): UseHabitsReturn {
       });
 
       if (insertError) {
+        logger.error("Ошибка создания привычки", {
+          habit_name: trimmed,
+          code: insertError.code,
+          message: insertError.message,
+        });
         setError(parseSupabaseError(insertError));
         return;
       }
@@ -135,6 +144,11 @@ export function useHabits(): UseHabitsReturn {
           type: "auth",
           message: "Вы не авторизованы.",
         });
+        logger.error("Не удалось получить пользователя при удалении", {
+          code: userError?.code,
+          message: userError?.message,
+          habit_id: id,
+        });
         return;
       }
 
@@ -145,6 +159,11 @@ export function useHabits(): UseHabitsReturn {
         .eq("user_id", userData.user.id); // A01: RLS defense-in-depth
 
       if (deleteError) {
+        logger.error("Ошибка удаления привычки", {
+          habit_id: id,
+          code: deleteError.code,
+          message: deleteError.message,
+        });
         setError(parseSupabaseError(deleteError));
         return;
       }
@@ -168,6 +187,11 @@ export function useHabits(): UseHabitsReturn {
           type: "auth",
           message: "Вы не авторизованы.",
         });
+        logger.error("Не удалось получить пользователя при toggle", {
+          code: userError?.code,
+          message: userError?.message,
+          habit_id: id,
+        });
         return;
       }
 
@@ -188,6 +212,13 @@ export function useHabits(): UseHabitsReturn {
         );
 
       if (upsertError) {
+        logger.error("Ошибка обновления отметки", {
+          habit_id: id,
+          log_date: today,
+          completed: newCompleted,
+          code: upsertError.code,
+          message: upsertError.message,
+        });
         setError(parseSupabaseError(upsertError));
         return;
       }
