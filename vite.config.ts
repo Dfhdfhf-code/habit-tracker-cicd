@@ -6,7 +6,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   // Для GitHub Pages: репозиторий habit-tracker
-  base: "/habit-tracker/",
+  base: "/habit-tracker-cicd/",
   test: {
     globals: true,
     environment: "happy-dom",
