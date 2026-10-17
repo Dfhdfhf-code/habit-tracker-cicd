@@ -9,7 +9,7 @@ export default defineConfig({
   base: "/habit-tracker/",
   test: {
     globals: true,
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: "./src/test/setup.ts",
   },
 });
