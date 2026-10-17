@@ -33,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      setLoading(false); // A07: сброс loading при любом событии auth
     });
 
     return () => subscription.unsubscribe();
@@ -47,6 +48,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
+    // A02: Password strength validation (OWASP)
+    if (password.length < 8) {
+      return { error: "Пароль должен содержать минимум 8 символов" };
+    }
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      return {
+        error:
+          "Пароль должен содержать строчные, заглавные буквы и цифры",
+      };
+    }
+
     const { error } = await supabase.auth.signUp({ email, password });
     return { error: error?.message ?? null };
   };

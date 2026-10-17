@@ -58,10 +58,10 @@ export function LoginForm() {
           <input
             type="password"
             className="glass-input"
-            placeholder="Пароль (минимум 6 символов)"
+            placeholder="Пароль (минимум 8 символов, буквы A-Z, a-z, цифры)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
+            minLength={8}
             required
           />
 

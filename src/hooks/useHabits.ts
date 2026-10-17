@@ -123,10 +123,23 @@ export function useHabits(): UseHabitsReturn {
   const removeHabit = useCallback(
     async (id: string) => {
       setError(null);
+
+      // A01: defense-in-depth — проверяем owner на клиенте
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+      if (userError || !userData.user) {
+        setError({
+          type: "auth",
+          message: "Вы не авторизованы.",
+        });
+        return;
+      }
+
       const { error: deleteError } = await supabase
         .from("habits")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("user_id", userData.user.id); // A01: RLS defense-in-depth
 
       if (deleteError) {
         setError(parseSupabaseError(deleteError));
