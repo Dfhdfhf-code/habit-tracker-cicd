@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { Habit } from "../types/habit";
 import { supabase } from "../lib/supabase";
 import { parseSupabaseError, type AppError } from "../utils/errors";
+import { logger } from "../utils/logger";
 
 export interface UseHabitsReturn {
   habits: Habit[];
@@ -58,8 +59,10 @@ export function useHabits(): UseHabitsReturn {
       .eq("log_date", today);
 
     if (logsError) {
-      // Не критично — логи могут отсутствовать
-      console.warn("Ошибка загрузки логов:", logsError.message);
+      logger.warn("Ошибка загрузки логов", {
+        error: logsError.message,
+        today,
+      });
     }
 
     const logsMap = new Map<string, boolean>();

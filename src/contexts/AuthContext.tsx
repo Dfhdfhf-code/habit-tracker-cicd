@@ -6,6 +6,7 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
+import { logger } from "../utils/logger";
 
 export interface AuthContextValue {
   user: User | null;
@@ -44,15 +45,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
     });
+    if (error) {
+      logger.error("Ошибка входа", { email, code: error.code });
+    } else {
+      logger.info("Пользователь вошёл", { email });
+    }
     return { error: error?.message ?? null };
   };
 
   const signUp = async (email: string, password: string) => {
     // A02: Password strength validation (OWASP)
     if (password.length < 8) {
+      logger.warn("Регистрация отклонена: слабый пароль", { email });
       return { error: "Пароль должен содержать минимум 8 символов" };
     }
     if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      logger.warn("Регистрация отклонена: слабый пароль", { email });
       return {
         error:
           "Пароль должен содержать строчные, заглавные буквы и цифры",
@@ -60,11 +68,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      logger.error("Ошибка регистрации", { email, code: error.code });
+    } else {
+      logger.info("Пользователь зарегистрирован", { email });
+    }
     return { error: error?.message ?? null };
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    logger.info("Пользователь вышел");
   };
 
   return (
