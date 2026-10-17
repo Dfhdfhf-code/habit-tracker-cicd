@@ -36,21 +36,24 @@ export function LoginForm() {
 
   // OAuth через Yandex (custom provider)
   const handleYandexLogin = useCallback(async () => {
-    setError(null);
-    setLoading(true);
+  setError(null);
+  setLoading(true);
 
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider: "custom:yandex" as never,
-      options: {
-        redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
+  const { error: oauthError } = await supabase.auth.signInWithOAuth({
+    provider: "custom:yandex" as never,
+    options: {
+      redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
+      queryParams: {
+        prompt: 'consent', // Заставляет Yandex показать экран подтверждения
       },
-    });
+    },
+  });
 
-    if (oauthError) {
-      setError(oauthError.message);
-      setLoading(false);
-    }
-  }, []);
+  if (oauthError) {
+    setError(oauthError.message);
+    setLoading(false);
+  }
+}, []);
 
   return (
     <div className="app-container">

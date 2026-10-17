@@ -1,6 +1,7 @@
 import { useAuth } from "./contexts/useAuth";
 import LoginForm from "./components/LoginForm";
 import HabitTracker from "./components/HabitTracker";
+import { MetrikaCounter } from "react-metrika";
 
 function App() {
   const { user, loading, signOut } = useAuth();
@@ -19,6 +20,14 @@ function App() {
 
   return (
     <div className="app-container">
+      <MetrikaCounter
+  id={113657944}
+  options={{
+    trackHash: true,
+    webvisor: true,
+    clickmap: true,
+  }}
+/>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <h1 className="app-title" style={{ margin: 0 }}>Трекер привычек</h1>
         <button
